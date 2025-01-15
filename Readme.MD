@@ -1,4 +1,4 @@
-﻿# NewLife.IoT - IoT标准库
+# NewLife.IoT - IoT标准库
 
 ![GitHub top language](https://img.shields.io/github/languages/top/newlifex/newlife.iot?logo=github)
 ![GitHub License](https://img.shields.io/github/license/newlifex/newlife.iot?logo=github)
@@ -14,7 +14,7 @@ Nuget：NewLife.IoT
 
 
 ## 新生命项目矩阵
-各项目默认支持net7.0/netstandard2.1/netstandard2.0/net4.61/net4.5，旧版（2023.0401）支持net4.0/net2.0  
+各项目默认支持net8.0/netstandard2.1/netstandard2.0/net4.61/net4.5，旧版（2023.0401）支持net4.0/net2.0  
 
 |                               项目                               | 年份  | 说明                                                                                   |
 | :--------------------------------------------------------------: | :---: | -------------------------------------------------------------------------------------- |
@@ -53,10 +53,10 @@ Nuget：NewLife.IoT
 ![XCode](https://newlifex.com/logo.png)  
 
 新生命团队（NewLife）成立于2002年，是新时代物联网行业解决方案提供者，致力于提供软硬件应用方案咨询、系统架构规划与开发服务。  
-团队主导的开源NewLife系列组件已被广泛应用于各行业，Nuget累计下载量高达60余万次。  
-团队开发的大数据核心组件NewLife.XCode、蚂蚁调度计算平台AntJob、星尘分布式平台Stardust、缓存队列组件NewLife.Redis以及物联网平台NewLife.IoT，均成功应用于电力、高校、互联网、电信、交通、物流、工控、医疗、文博等行业，为客户提供了大量先进、可靠、安全、高质量、易扩展的产品和系统集成服务。  
+团队主导的70多个开源项目已被广泛应用于各行业，Nuget累计下载量高达100余万次。  
+团队开发的大数据中间件NewLife.XCode、蚂蚁调度计算平台AntJob、星尘分布式平台Stardust、缓存队列组件NewLife.Redis以及物联网平台FIoT，均成功应用于电力、高校、互联网、电信、交通、物流、工控、医疗、文博等行业，为客户提供了大量先进、可靠、安全、高质量、易扩展的产品和系统集成服务。  
 
-我们将不断通过服务的持续改进，成为客户长期信赖的合作伙伴，通过不断的创新和发展，成为国内优秀的IT服务供应商。  
+我们将不断通过服务的持续改进，成为客户长期信赖的合作伙伴，通过不断的创新和发展，成为国内优秀的IoT服务供应商。  
 
 `新生命团队始于2002年，部分开源项目具有20年以上漫长历史，源码库保留有2010年以来所有修改记录`  
 网站：https://newlifex.com  
