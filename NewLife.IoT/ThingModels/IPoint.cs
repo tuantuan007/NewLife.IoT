@@ -24,7 +24,7 @@ public interface IPoint
 public static class PointHelper
 {
     /// <summary>
-    /// 根据点位类型长度，解析字节数组为目标类型。默认小端字节序，大端需要用IOHelper.Swap提前处理
+    /// 根据点位类型长度，解析字节数组为目标类型。默认小端字节序，大端需要用Swap提前处理
     /// </summary>
     /// <param name="point">点位</param>
     /// <param name="data">字节数据</param>
@@ -52,7 +52,7 @@ public static class PointHelper
     }
 
     /// <summary>
-    /// 根据点位类型长度，把目标对象转为字节数组。默认小端字节序，大端需要对返回值用IOHelper.Swap处理
+    /// 根据点位类型长度，把目标对象转为字节数组。默认小端字节序，大端需要对返回值用Swap处理
     /// </summary>
     /// <param name="point">点位</param>
     /// <param name="value">数据对象</param>
@@ -67,7 +67,7 @@ public static class PointHelper
         return type.GetTypeCode() switch
         {
             TypeCode.Boolean => BitConverter.GetBytes((Boolean)(val ?? false)),
-            TypeCode.Byte => new[] { (Byte)(val ?? 0) },
+            TypeCode.Byte => [(Byte)(val ?? 0)],
             TypeCode.Char => BitConverter.GetBytes((Char)(val ?? 0)),
             TypeCode.Double => BitConverter.GetBytes((Double)(val ?? 0)),
             TypeCode.Int16 => BitConverter.GetBytes((Int16)(val ?? 0)),
@@ -93,28 +93,18 @@ public static class PointHelper
         if (type == null)
         {
             // 找到物属性定义
-            var pi = spec?.Properties?.FirstOrDefault(e => e.Id.EqualIgnoreCase(point.Name));
+            var pi = point.Name.IsNullOrEmpty() ? null : spec?.Properties?.FirstOrDefault(e => e.Id.EqualIgnoreCase(point.Name));
             type = TypeHelper.GetNetType(pi?.DataType?.Type);
         }
         if (type == null) return null;
 
-        switch (type.GetTypeCode())
+        return type.GetTypeCode() switch
         {
-            case TypeCode.Boolean:
-            case TypeCode.Byte:
-            case TypeCode.SByte:
-                return data.ToBoolean() ? new[] { (UInt16)0x01 } : new[] { (UInt16)0x00 };
-            case TypeCode.Int16:
-            case TypeCode.UInt16:
-            case TypeCode.Int32:
-            case TypeCode.UInt32:
-                return data.ToInt() > 0 ? new[] { (UInt16)0x01 } : new[] { (UInt16)0x00 };
-            case TypeCode.Int64:
-            case TypeCode.UInt64:
-                return data.ToLong() > 0 ? new[] { (UInt16)0x01 } : new[] { (UInt16)0x00 };
-            default:
-                return data.ToBoolean() ? new[] { (UInt16)0x01 } : new[] { (UInt16)0x00 };
-        }
+            TypeCode.Boolean or TypeCode.Byte or TypeCode.SByte => data.ToBoolean() ? [0x01] : [0x00],
+            TypeCode.Int16 or TypeCode.UInt16 or TypeCode.Int32 or TypeCode.UInt32 => data.ToInt() > 0 ? [0x01] : [0x00],
+            TypeCode.Int64 or TypeCode.UInt64 => data.ToLong() > 0 ? [0x01] : [0x00],
+            _ => data.ToBoolean() ? [0x01] : [0x00],
+        };
     }
 
     /// <summary>根据点位信息和物模型信息，把原始数据转寄存器/字</summary>
@@ -129,7 +119,7 @@ public static class PointHelper
         if (type == null)
         {
             // 找到物属性定义
-            var pi = spec?.Properties?.FirstOrDefault(e => e.Id.EqualIgnoreCase(point.Name));
+            var pi = point.Name.IsNullOrEmpty() ? null : spec?.Properties?.FirstOrDefault(e => e.Id.EqualIgnoreCase(point.Name));
             type = TypeHelper.GetNetType(pi?.DataType?.Type);
         }
         if (type == null) return null;
@@ -139,41 +129,41 @@ public static class PointHelper
             case TypeCode.Boolean:
             case TypeCode.Byte:
             case TypeCode.SByte:
-                return data.ToBoolean() ? new[] { (UInt16)0x01 } : new[] { (UInt16)0x00 };
+                return data.ToBoolean() ? [0x01] : [0x00];
             case TypeCode.Int16:
             case TypeCode.UInt16:
-                return new[] { (UInt16)data.ToInt() };
+                return [(UInt16)data.ToInt()];
             case TypeCode.Int32:
             case TypeCode.UInt32:
                 {
                     var n = data.ToInt();
-                    return new[] { (UInt16)(n >> 16), (UInt16)(n & 0xFFFF) };
+                    return [(UInt16)(n >> 16), (UInt16)(n & 0xFFFF)];
                 }
             case TypeCode.Int64:
             case TypeCode.UInt64:
                 {
                     var n = data.ToLong();
-                    return new[] { (UInt16)(n >> 48), (UInt16)(n >> 32), (UInt16)(n >> 16), (UInt16)(n & 0xFFFF) };
+                    return [(UInt16)(n >> 48), (UInt16)(n >> 32), (UInt16)(n >> 16), (UInt16)(n & 0xFFFF)];
                 }
             case TypeCode.Single:
                 {
                     var d = (Single)data.ToDouble();
                     //var n = BitConverter.SingleToInt32Bits(d);
                     var n = (UInt32)d;
-                    return new[] { (UInt16)(n >> 16), (UInt16)(n & 0xFFFF) };
+                    return [(UInt16)(n >> 16), (UInt16)(n & 0xFFFF)];
                 }
             case TypeCode.Double:
                 {
                     var d = (Double)data.ToDouble();
                     //var n = BitConverter.DoubleToInt64Bits(d);
                     var n = (UInt64)d;
-                    return new[] { (UInt16)(n >> 48), (UInt16)(n >> 32), (UInt16)(n >> 16), (UInt16)(n & 0xFFFF) };
+                    return [(UInt16)(n >> 48), (UInt16)(n >> 32), (UInt16)(n >> 16), (UInt16)(n & 0xFFFF)];
                 }
             case TypeCode.Decimal:
                 {
                     var d = data.ToDecimal();
                     var n = (UInt64)d;
-                    return new[] { (UInt16)(n >> 48), (UInt16)(n >> 32), (UInt16)(n >> 16), (UInt16)(n & 0xFFFF) };
+                    return [(UInt16)(n >> 48), (UInt16)(n >> 32), (UInt16)(n >> 16), (UInt16)(n & 0xFFFF)];
                 }
             //case TypeCode.String:
             //    break;
